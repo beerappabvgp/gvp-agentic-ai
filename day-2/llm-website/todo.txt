@@ -1,0 +1,25 @@
+REquirements:
+I wanted to create a website 
+Any user can come and visit the website
+Users can enter the prompt and click on generate response button 
+once they click on generate response button the user should see the response on the screen
+    - by making an llm call you will get the response - llama
+
+
+Create a new project
+To Create a new virtual environment
+Activate the virtual environment
+Install all the dependencies - groq, streamlit, dotenv
+You need to create a new api key - GROQ
+store the secret in the .env file 
+import all the libraries that you need at the top of the file.
+Load the .env file 
+create the client of GROQ llm
+create the prompt - read the prompt from the frontend and send that prompt to llm 
+call the llm to get the response 
+Display the response on the frontend
+
+Frontend Requirements
+You need a text box
+We need generate response button
+show the response 
