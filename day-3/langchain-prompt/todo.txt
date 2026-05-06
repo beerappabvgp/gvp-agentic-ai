@@ -1,0 +1,13 @@
+create a project
+create an virtual environment 
+activate the virtual environment 
+Install all the dependencies
+Get GROQ api key 
+we wanted to create a .env file 
+Store GROQ apikey in the .env file 
+Import all the dependencies that you need in the program 
+Load the .env file 
+You wanted to create the connection to talk to GROQ 
+Create prompt 
+call the llm with appropriate inputs 
+Display the response on the screen 

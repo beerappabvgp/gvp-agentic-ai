@@ -1,0 +1,14 @@
+create a new project
+create a new virtual environment
+activate the virtual environment 
+Install all the dependencies
+Get the api key 
+Store the secrets in the .env
+Import the dependencies
+Load the .env file
+Creat a connection to the llm
+Create the prompt
+Call the llm
+get the reposne and print it 
+Create the memory to store the previous conversation (inputs and outputs)
+Give the previous conversation information in the every next prompt

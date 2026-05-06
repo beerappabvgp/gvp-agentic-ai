@@ -1,0 +1,62 @@
+Requirements:
+
+I wanted to build three different chains 
+    1. Menu chains
+    2. Order chains
+    3. General chains
+
+Now based on user prompt I wanted to invoke or call the right chain 
+
+and then print the result 
+
+Steps to solve the above problem:
+
+Create a new project 
+create a new virtual environment 
+activate the virtual environment 
+Install all the dependencies
+CReate a .env file 
+Store all the secrets in the .env file 
+Import all the libraries at the top of your file for your program 
+Load the .env file 
+create the connection to the model 
+create the prompts for all the three chains 
+create three different chains 
+Based on the user prompt you need to route the prompt to the right chain 
+print the result on the screen 
+
+lecl-chais 
+
+no_of hours_studies      no_of hours_slept         output
+10                          8                       1
+20                          4                       1
+2                           22                      0
+4                           20                      0
+7                           16                      0
+12                          10                      1
+14                          6                       1
+6                           16                      0
+
+GIven thew new data like (5,5) - it needs to predict whether student has passed or failed 
+
+y = mx + c
+
+y = w1.x1 + w2.x2
+
+Before training I randomly initiate the weights 
+w1 = 1, w2 = 2
+x1 = 10, x2 = 8 => y = 10 + 16 = 26 = 0 = 1
+x1 = 20, x2 = 4 => y = 20 + 8 = 28 = 0  = 1
+x1 = 2, x2 = 22 => y = 2 + 44 = 47 = 1 = 0
+x1 = 4, x2 = 20 => y = 4 + 40 = 44 = 0 = 0
+loss = (1 - 0) = 1 = 100%
+overall loss = 75% loss
+
+Bring down the loss from 100 to 0 percent
+In the output layer we are using the sigmoid function
+
+dy / dw1 = 2
+
+what if dy / dw1 is positive 
+what if dy / dw1 is negative
+what if dy / dw1 = 0
