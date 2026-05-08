@@ -31,3 +31,25 @@ create the rag prompt
 call the llm with the prompt 
 get the response and print on the screen 
 
+
+
+[
+    '[Page 4: The LTV ratio for loans up to Rs 75 lakhs is 80%.]',
+
+    
+    '[Page 2: Salaried employees must provide last 3 months salary slips.]',
+
+    
+    '[Page 7: Self-employed applicants need 2 years of ITR filings.]'
+]
+
+
+
+
+Conversational RAG
+
+1. You have stored the embeddings of the pdf in the vector DB
+2. What is CS?
+3. What is DL?
+4. What is ML?
+5. How is deep learning related to computer science?

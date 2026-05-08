@@ -1,0 +1,653 @@
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║           DocChat — Multi-Document RAG with Conversational AI                  ║
+║                    PROJECT REQUIREMENTS DOCUMENT                               ║
+║                         Version 1.0 | May 2025                                 ║
+╚══════════════════════════════════════════════════════════════════════════════════╝
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — PROBLEM STATEMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TITLE
+-----
+DocChat: A Conversational AI System for Multi-Document Question Answering
+
+
+THE REAL WORLD PROBLEM
+-----------------------
+Every individual and business in India deals with complex documents daily —
+insurance policies, legal contracts, loan agreements, government scheme guidelines,
+medical reports, employee handbooks, and product manuals.
+
+These documents share three painful characteristics:
+
+  1. They are LONG — typically 20 to 100+ pages of dense text
+  2. They are TECHNICAL — written in legal, medical, or financial jargon
+  3. They are MULTIPLE — a person may have 5 to 20 such documents to manage
+
+The current situation for most people:
+
+  - They never fully read the documents they sign or receive
+  - When they have a question, they call a customer support line and wait
+  - Customer support agents look up the same document manually — slow and error-prone
+  - They Google the answer and get generic information, not their specific document
+  - They pay a lawyer or consultant Rs 2,000 to Rs 10,000 per hour for answers
+    that are already written in the document they own
+
+Real example of the pain:
+  Priya has a health insurance policy from Star Health. She needs knee surgery.
+  She calls the helpline. She waits 25 minutes. The agent reads from the same
+  policy document Priya has. The agent gives a vague answer. Priya is still
+  unsure if her specific surgery is covered, under what conditions, after what
+  waiting period, and up to what amount.
+
+  This entire conversation could have been answered in 10 seconds by an AI
+  that reads Priya's exact policy document and gives her a grounded, cited answer.
+
+
+WHO HAS THIS PROBLEM
+---------------------
+  → Insurance policyholders asking about coverage, claims, exclusions
+  → Small business owners reviewing vendor contracts and lease agreements
+  → Patients trying to understand their medical reports and discharge summaries
+  → Employees reading their HR policies and offer letters
+  → Students and researchers working with multiple reference documents
+  → Loan applicants understanding home loan, personal loan, car loan policy terms
+  → Startup founders reviewing NDAs, term sheets, and shareholder agreements
+
+
+WHY EXISTING SOLUTIONS DO NOT WORK
+------------------------------------
+  → ChatGPT / Claude  : Does not have access to your private documents.
+                        Gives generic answers, not answers from your specific file.
+                        Hallucinates specific numbers, dates, and clauses.
+
+  → Ctrl+F / Search   : Only finds exact keywords. Cannot answer questions.
+                        Cannot combine information from multiple pages.
+                        Cannot handle follow-up questions.
+
+  → Reading manually  : Takes hours for large documents.
+                        People skip important clauses.
+                        Cannot search across 5 documents simultaneously.
+
+  → Hiring experts    : Expensive. Slow. Not available 24/7.
+                        Still requires the expert to manually read the document.
+
+
+THE SOLUTION — DocChat
+-----------------------
+DocChat is a conversational AI system that allows users to:
+
+  1. Upload their own PDF documents (one or many)
+  2. Select which documents to search at any time
+  3. Ask questions in plain English
+  4. Receive precise, grounded answers with exact page citations
+  5. Ask follow-up questions — the system remembers the conversation
+  6. Get answers only from the selected documents — no hallucination
+
+The system uses Retrieval-Augmented Generation (RAG):
+  → It reads and indexes the user's documents (done once)
+  → At query time it finds the most relevant sections (milliseconds)
+  → It passes those sections to an LLM which generates a grounded answer
+  → Every answer includes the source document name and page number
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — PROJECT SCOPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT IS IN SCOPE (build this)
+------------------------------
+  ✅ Upload multiple PDF files via a web UI
+  ✅ Automatic text extraction from each PDF
+  ✅ Intelligent chunking with overlap to preserve context
+  ✅ Local embedding generation (no paid API needed)
+  ✅ Vector storage in ChromaDB with per-document metadata
+  ✅ Smart re-indexing (skip if already indexed — no duplicates)
+  ✅ Checkbox-based document selection for filtered search
+  ✅ Similarity search only within selected documents
+  ✅ Conversational Q&A with memory of previous turns
+  ✅ Answers grounded only in retrieved chunks (no hallucination)
+  ✅ Source citation in every answer (document name + page number)
+  ✅ Streamlit-based chat interface
+  ✅ Session-based conversation history
+
+
+WHAT IS OUT OF SCOPE (do not build this now)
+---------------------------------------------
+  ❌ User authentication and login system
+  ❌ Cloud database (use local ChromaDB only)
+  ❌ Support for non-PDF files (Word, Excel, images)
+  ❌ Real-time collaborative access by multiple users
+  ❌ Mobile application
+  ❌ Payment or subscription system
+  ❌ Automatic document summarisation on upload
+  ❌ Fine-tuning any LLM model
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — FUNCTIONAL REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FR-01 | DOCUMENT UPLOAD
+------------------------
+  Description : User can upload one or more PDF files through the UI sidebar.
+  Behaviour   :
+    - Accept multiple PDF files in a single upload action
+    - Show a progress spinner while each file is being processed
+    - Display success message with chunk count after indexing
+    - Display "already indexed" message if the same file is uploaded again
+    - Save uploaded files to a local ./uploads/ folder
+  Validation  :
+    - Only accept .pdf file format
+    - Show an error message if a non-PDF file is uploaded
+  Edge cases  :
+    - If the same file is uploaded twice, do NOT create duplicate chunks
+    - If the PDF has no extractable text (scanned image PDF), show a warning
+
+
+FR-02 | DOCUMENT INDEXING PIPELINE
+------------------------------------
+  Description : Each uploaded PDF is processed through the full RAG pipeline.
+  Steps in order:
+    Step 1 — LOAD
+      - Use PyPDFLoader to extract text from every page of the PDF
+      - Each page becomes one Document object with page number in metadata
+
+    Step 2 — CHUNK
+      - Use RecursiveCharacterTextSplitter to split pages into smaller chunks
+      - chunk_size    = 500 characters
+      - chunk_overlap = 100 characters
+      - separators    = ['\n\n', '\n', '. ', ' ', '']
+      - Each chunk inherits the page number and source filename in its metadata
+
+    Step 3 — EMBED
+      - Use HuggingFaceEmbeddings with model all-MiniLM-L6-v2
+      - This model runs 100% locally on CPU — no API call, no cost
+      - Each chunk is converted to a 384-dimensional vector
+
+    Step 4 — STORE
+      - Store each chunk in ChromaDB with the following metadata:
+          source  : original PDF filename (e.g. "health_policy.pdf")
+          page    : page number from the PDF (e.g. 4)
+          user_id : session identifier for the current user
+      - Persist ChromaDB to ./multi_doc_db/ folder on disk
+
+  Duplicate prevention:
+    - Before indexing, check if any chunks with the same source + user_id exist
+    - If chunks already exist, skip indexing entirely
+    - Print a message to confirm skipping
+
+
+FR-03 | DOCUMENT LISTING AND SELECTION
+----------------------------------------
+  Description : User can see all indexed documents and select which ones to search.
+  Behaviour   :
+    - In the sidebar, show a list of all PDF filenames that have been indexed
+    - Each filename has a checkbox next to it
+    - All checkboxes are checked by default when a document is first indexed
+    - User can uncheck any document to exclude it from search
+    - Show a count of how many documents are currently selected
+    - If zero documents are selected, show a warning and disable the chat input
+
+
+FR-04 | SIMILARITY SEARCH WITH METADATA FILTER
+------------------------------------------------
+  Description : When a user asks a question, search only within the selected documents.
+  Behaviour   :
+    - Embed the user's question using the same all-MiniLM-L6-v2 model
+    - Search ChromaDB using cosine similarity
+    - Apply a metadata filter so ONLY chunks from selected documents are returned
+    - Return top k=4 most similar chunks
+    - Each returned chunk includes its similarity score, source file, and page number
+  Filter logic:
+    - If 1 document selected  : filter = {source: {$eq: "filename.pdf"}}
+    - If 2+ documents selected: filter = {source: {$in: ["file1.pdf", "file2.pdf"]}}
+    - Always also filter by user_id to prevent cross-user data access
+  Edge case:
+    - If no relevant chunks found above similarity threshold, return a message
+      saying the answer was not found in the selected documents
+
+
+FR-05 | CONVERSATIONAL Q&A WITH MEMORY
+----------------------------------------
+  Description : The system answers questions using retrieved chunks and remembers
+                previous turns in the conversation.
+  Behaviour   :
+    - Inject retrieved chunks as CONTEXT into the LLM prompt
+    - Inject the last 3 conversation turns as HISTORY into the LLM prompt
+    - Use Groq llama-3.1-8b-instant as the LLM
+    - temperature = 0 (deterministic, factual answers)
+    - System prompt instructs the LLM to:
+        a) Answer ONLY from the provided context
+        b) Say "I could not find this in the selected documents" if not found
+        c) Always cite the source document name and page number
+        d) Never guess, assume, or use outside knowledge
+  Memory:
+    - Store conversation as a list of User/Assistant message pairs
+    - Pass the last 6 messages (3 user + 3 assistant) as history
+    - Clear conversation history when user clicks "Clear Conversation"
+
+
+FR-06 | SOURCE CITATION DISPLAY
+---------------------------------
+  Description : Every answer must show which document and page it came from.
+  Behaviour   :
+    - After each assistant response, show an expandable "View Sources" section
+    - Inside show: document name, page number, and relevance score for each chunk
+    - Relevance score displayed as a percentage (e.g. "91% relevant")
+    - Sources are shown in order from most to least relevant
+  Example display:
+    📄 Sources used:
+      1. health_policy.pdf — Page 12 — 91% relevant
+      2. health_policy.pdf — Page 8  — 84% relevant
+      3. life_policy.pdf   — Page 3  — 71% relevant
+
+
+FR-07 | CHAT INTERFACE
+-----------------------
+  Description : A clean, intuitive chat UI built with Streamlit.
+  Behaviour   :
+    - Chat messages displayed in alternating user/assistant bubbles
+    - User messages aligned right, assistant messages aligned left
+    - Loading spinner shown while the answer is being generated
+    - Chat input box fixed at the bottom of the screen
+    - Full conversation history visible by scrolling up
+    - "Clear Conversation" button resets the chat (but keeps documents indexed)
+    - App title and document count shown at the top
+
+
+FR-08 | PERSISTENCE
+--------------------
+  Description : Indexed documents survive application restarts.
+  Behaviour   :
+    - ChromaDB data is saved to disk at ./multi_doc_db/
+    - When the app restarts, all previously indexed documents are available
+    - User does not need to re-upload or re-index documents on restart
+    - Uploaded PDF files are saved to ./uploads/ for reference
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — NON-FUNCTIONAL REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NFR-01 | PERFORMANCE
+---------------------
+  - Document indexing (per PDF, 10 pages): complete within 30 seconds
+  - Similarity search across 500 chunks: complete within 200 milliseconds
+  - LLM response (Groq): received within 10 seconds for 95% of queries
+  - UI should never freeze — use Streamlit spinners for all long operations
+
+NFR-02 | COST
+--------------
+  - Embedding model: FREE — runs locally using all-MiniLM-L6-v2
+  - Vector database: FREE — ChromaDB local instance, no server needed
+  - LLM: FREE — Groq free tier (llama-3.1-8b-instant, generous rate limits)
+  - Total infrastructure cost to run this project: Rs 0
+
+NFR-03 | ACCURACY
+------------------
+  - System must ONLY answer from retrieved document chunks
+  - System must NEVER generate information not present in the context
+  - If answer not found, system must clearly say so — never guess
+  - Every answer must include a source citation
+
+NFR-04 | PRIVACY
+-----------------
+  - All document processing happens locally on the user's machine
+  - PDF content is never sent to any external server for embedding
+  - Only the final question + retrieved text chunks are sent to Groq API
+  - No document content is logged or stored externally
+
+NFR-05 | RELIABILITY
+---------------------
+  - Duplicate uploads must never create duplicate chunks in ChromaDB
+  - App must handle corrupted or image-only PDFs gracefully with an error message
+  - App must handle Groq API timeout with a user-friendly retry message
+  - App must handle empty ChromaDB (no documents yet) without crashing
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — TECHNICAL ARCHITECTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+SYSTEM COMPONENTS
+------------------
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    STREAMLIT UI (app.py)                        │
+  │   Sidebar: upload + document selection checkboxes              │
+  │   Main area: chat interface with source citations              │
+  └────────────────────────┬────────────────────────────────────────┘
+                           │ calls
+  ┌────────────────────────▼────────────────────────────────────────┐
+  │               RAG BACKEND (multi_doc_rag.py)                    │
+  │                                                                 │
+  │   index_document()      → indexes one PDF into ChromaDB        │
+  │   list_user_documents() → returns list of indexed filenames    │
+  │   search_documents()    → similarity search with filter        │
+  │   answer_question()     → full RAG pipeline + LLM call        │
+  └──────┬──────────────────────────┬──────────────────────────────┘
+         │                          │
+  ┌──────▼──────┐           ┌───────▼──────────────────────────────┐
+  │  CHROMA DB  │           │         GROQ API                     │
+  │  (local     │           │  Model: llama-3.1-8b-instant         │
+  │  ./multi_   │           │  Input: question + context + history │
+  │  doc_db/)   │           │  Output: grounded answer             │
+  └─────────────┘           └──────────────────────────────────────┘
+         │
+  ┌──────▼──────────────────────────────────────────────────────────┐
+  │           HUGGINGFACE EMBEDDING MODEL (local)                   │
+  │   Model: sentence-transformers/all-MiniLM-L6-v2                │
+  │   Input: text chunk or user query                              │
+  │   Output: 384-dimensional vector                               │
+  │   Runs: 100% on laptop CPU — no internet needed after download │
+  └─────────────────────────────────────────────────────────────────┘
+
+
+DATA FLOW — INDEXING (runs once per document)
+----------------------------------------------
+  PDF file
+    → PyPDFLoader           : extract text page by page
+    → RecursiveCharacterTextSplitter : cut into ~500 char chunks with 100 overlap
+    → HuggingFaceEmbeddings : convert each chunk to 384-number vector
+    → Chroma.add_documents() : store text + vector + metadata in ChromaDB
+    → Done. Indexed data persists to disk.
+
+
+DATA FLOW — QUERYING (runs on every question)
+----------------------------------------------
+  User question (text)
+    → HuggingFaceEmbeddings  : convert question to 384-number vector
+    → ChromaDB.similarity_search() : find top 4 most similar chunks
+                                     (filtered by selected documents)
+    → Build prompt           : question + top 4 chunks + last 3 conv turns
+    → Groq LLM               : generate grounded answer
+    → Return answer + sources to UI
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6 — FILE STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  multi-doc-rag/
+  │
+  ├── app.py                  ← Streamlit UI — the frontend chat interface
+  │                             Handles: file upload, checkboxes, chat display
+  │
+  ├── multi_doc_rag.py        ← RAG backend — all core logic lives here
+  │                             Handles: indexing, searching, answering
+  │
+  ├── requirements.txt        ← All Python packages with pinned versions
+  │
+  ├── .env                    ← API keys (NEVER commit to git)
+  │     GROQ_API_KEY=...
+  │
+  ├── .env.example            ← Template showing what keys are needed (safe to commit)
+  │     GROQ_API_KEY=
+  │
+  ├── .gitignore              ← Files git should ignore
+  │     .env
+  │     venv/
+  │     __pycache__/
+  │     *.pyc
+  │     uploads/
+  │     multi_doc_db/
+  │
+  ├── uploads/                ← PDF files uploaded by user (auto-created by app)
+  │     health_policy.pdf
+  │     life_policy.pdf
+  │     vehicle_policy.pdf
+  │
+  └── multi_doc_db/           ← ChromaDB vector database files (auto-created)
+        chroma.sqlite3
+        ...
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7 — DEPENDENCIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Package                  Version    Purpose
+  ─────────────────────────────────────────────────────────────────────
+  langchain                0.3.7      Core LangChain framework
+  langchain-community      0.3.7      PyPDFLoader, Chroma vectorstore
+  langchain-core           0.3.15     ChatPromptTemplate, StrOutputParser
+  langchain-text-splitters 0.3.2      RecursiveCharacterTextSplitter
+  langchain-groq           0.2.1      ChatGroq LLM integration
+  langchain-huggingface    0.1.2      HuggingFaceEmbeddings
+  chromadb                 0.6.3      Local vector database
+  sentence-transformers    3.3.1      all-MiniLM-L6-v2 embedding model
+  pypdf                    5.1.0      PDF text extraction
+  streamlit                1.40.0     Web UI framework
+  groq                     0.11.0     Groq API client
+  python-dotenv            1.0.1      Load .env file
+
+
+INSTALLATION
+-------------
+  pip install -r requirements.txt
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 8 — STEP BY STEP BUILD PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build in this exact order. Each step is testable before moving to the next.
+
+STEP 1 — Setup (30 minutes)
+-----------------------------
+  [ ] Create project folder and virtual environment
+  [ ] Install all packages from requirements.txt
+  [ ] Create .env file with GROQ_API_KEY
+  [ ] Verify all imports work with a simple test script
+  [ ] Download sample PDFs to test with (any 2-3 PDFs)
+
+STEP 2 — Document loading and chunking (1 hour)
+-------------------------------------------------
+  [ ] Write and test PyPDFLoader on one PDF
+  [ ] Print number of pages loaded
+  [ ] Write and test RecursiveCharacterTextSplitter
+  [ ] Print number of chunks created
+  [ ] Print a sample chunk with its metadata
+  [ ] Verify chunk_size and overlap are working correctly
+
+STEP 3 — Embeddings and ChromaDB (1 hour)
+-------------------------------------------
+  [ ] Write and test HuggingFaceEmbeddings — embed one sentence
+  [ ] Write Chroma.from_documents() for first-time indexing
+  [ ] Write Chroma() connection for subsequent runs
+  [ ] Write the duplicate check using vectorstore.get() with filter
+  [ ] Write index_document() function with the smart check
+  [ ] Test: run indexing twice — confirm no duplicates on second run
+
+STEP 4 — Similarity search with filter (1 hour)
+-------------------------------------------------
+  [ ] Write basic similarity_search() without any filter
+  [ ] Test with a sample query — print top 3 results
+  [ ] Add metadata filter for single document
+  [ ] Add metadata filter for multiple documents using $in
+  [ ] Test: confirm results only come from the filtered document
+  [ ] Write search_documents() function with all filter logic
+
+STEP 5 — LLM + RAG prompt (1 hour)
+-------------------------------------
+  [ ] Write ChatGroq connection and test with a simple question
+  [ ] Write ChatPromptTemplate with system + human messages
+  [ ] Write the full prompt including CONTEXT and HISTORY placeholders
+  [ ] Build the LCEL chain: prompt | llm | StrOutputParser()
+  [ ] Write answer_question() function
+  [ ] Test end-to-end: upload PDF → index → ask question → get answer with citation
+
+STEP 6 — Conversation memory (30 minutes)
+-------------------------------------------
+  [ ] Add conversation_history list to track turns
+  [ ] Append each user question and assistant answer to history
+  [ ] Inject last 6 history items into the prompt
+  [ ] Test: ask a follow-up question that requires memory
+        Example: "What is the prepayment charge?" then "Is it waived for women?"
+  [ ] Confirm second answer uses context from first answer
+
+STEP 7 — Streamlit UI (2 hours)
+---------------------------------
+  [ ] Create app.py with basic Streamlit structure
+  [ ] Add sidebar with file uploader (accept_multiple_files=True)
+  [ ] Wire file uploader to index_document() function
+  [ ] Add document listing using list_user_documents()
+  [ ] Add checkboxes for each document with state tracking
+  [ ] Add main chat area with st.chat_input()
+  [ ] Connect chat input to answer_question() with selected_docs filter
+  [ ] Display assistant answer with source citations in expander
+  [ ] Add Clear Conversation button
+  [ ] Add loading spinner during indexing and answering
+
+STEP 8 — Testing and polish (1 hour)
+--------------------------------------
+  [ ] Test with 3 different PDFs uploaded simultaneously
+  [ ] Test with all documents selected — confirm answers span all docs
+  [ ] Test with only one document selected — confirm filter works
+  [ ] Test duplicate upload — confirm no extra chunks created
+  [ ] Test follow-up questions — confirm memory works
+  [ ] Test out-of-scope question — confirm "not found" response
+  [ ] Test app restart — confirm documents still indexed after restart
+  [ ] Fix any bugs found during testing
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 9 — TEST CASES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TC-01 | Upload and index
+  Action  : Upload health_policy.pdf
+  Expected: "Indexed 94 chunks" message shown
+  Pass if : ChromaDB collection count increases by ~94
+
+TC-02 | Duplicate upload prevention
+  Action  : Upload the same health_policy.pdf again
+  Expected: "Already indexed — skipping" message shown
+  Pass if : ChromaDB collection count does NOT increase
+
+TC-03 | Basic question answering
+  Action  : Ask "What is the waiting period for knee surgery?"
+  Expected: Answer cites health_policy.pdf and a page number
+  Pass if : Answer contains a specific waiting period and source citation
+
+TC-04 | Document filter — single document
+  Action  : Deselect all except health_policy.pdf. Ask about life insurance.
+  Expected: "I could not find this in the selected documents"
+  Pass if : System does not pull from life_policy.pdf which is deselected
+
+TC-05 | Document filter — multiple documents
+  Action  : Select health_policy.pdf AND life_policy.pdf
+            Ask "What is covered in case of accidental death?"
+  Expected: Answer synthesises information from both documents
+  Pass if : Source citations show both document names
+
+TC-06 | Conversation memory
+  Action  : Ask "What is the prepayment charge?"
+            Then ask "Is it waived for anyone?"
+  Expected: Second answer understands "it" refers to prepayment charge
+  Pass if : Second answer correctly responds about waiver (e.g. for women)
+
+TC-07 | Out of scope question
+  Action  : Ask "What is the current RBI repo rate?"
+  Expected: "I could not find this in the selected documents"
+  Pass if : System does not hallucinate a repo rate
+
+TC-08 | App restart persistence
+  Action  : Stop the Streamlit app. Restart it. Check sidebar.
+  Expected: All previously uploaded documents still listed with checkboxes
+  Pass if : Documents load from ChromaDB without re-uploading
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 10 — EXAMPLE USER JOURNEY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Priya opens DocChat at http://localhost:8501
+
+  1. She sees the sidebar with an upload button and an empty document list.
+
+  2. She uploads three files:
+       - star_health_policy.pdf
+       - hdfc_life_policy.pdf
+       - bajaj_vehicle_policy.pdf
+
+  3. The app shows:
+       "✅ star_health_policy.pdf indexed — 112 chunks"
+       "✅ hdfc_life_policy.pdf indexed — 89 chunks"
+       "✅ bajaj_vehicle_policy.pdf indexed — 67 chunks"
+
+  4. She sees three checkboxes in the sidebar — all checked by default.
+     She unchecks bajaj_vehicle_policy.pdf. She only wants health answers today.
+
+  5. She types: "Is my knee replacement surgery covered?"
+
+  6. The app shows a spinner: "Searching documents..."
+
+  7. The answer appears:
+       "Yes, knee replacement surgery is covered under your Star Health policy.
+        However, a waiting period of 2 years applies from the policy start date
+        for all joint replacement procedures.
+        [Source: star_health_policy.pdf, Page 12]"
+
+  8. She types: "What about the room rent limit?"
+
+  9. The app answers using the conversation context:
+       "Your policy covers room rent up to Rs 5,000 per day (Page 8,
+        Section 3.1). If you choose a room exceeding this limit,
+        proportionate deduction will apply to all associated charges."
+
+  10. She types: "What does proportionate deduction mean exactly?"
+
+  11. The app answers with explanation — it remembers the full conversation.
+
+  12. She closes the browser. The next day she reopens the app.
+      All three documents are still listed. She continues from where she left off.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 11 — FUTURE ENHANCEMENTS (after v1.0 is working)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Enhancement 1 — Delete document
+    Allow user to remove a document from the index via a delete button.
+    Must remove all chunks with matching source + user_id from ChromaDB.
+
+  Enhancement 2 — Chunk count display
+    Show the number of chunks indexed per document next to the checkbox.
+    Example: "📄 health_policy.pdf (112 chunks)"
+
+  Enhancement 3 — Relevance threshold
+    Add a slider in the sidebar to set minimum similarity score.
+    Chunks below the threshold are excluded even if they are top-k results.
+
+  Enhancement 4 — Export conversation
+    Add a "Download Chat" button that saves the full conversation as a .txt file.
+    Useful for users who want to keep a record of their Q&A session.
+
+  Enhancement 5 — Multi-user support
+    Add a simple name input at the start of each session.
+    Use the name as user_id so different people can have separate document sets.
+
+  Enhancement 6 — Search across ALL documents
+    Add an "All Documents" button that overrides individual checkboxes.
+    Searches across every document without needing to check each one.
+
+  Enhancement 7 — LangSmith monitoring
+    Add LANGSMITH_TRACING=true to .env
+    Add LANGSMITH_API_KEY to .env
+    Every query will be automatically traced at smith.langchain.com
+    Useful for debugging slow or wrong answers in production.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+END OF DOCUMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Document: DocChat_Project_Requirements_v1.0.txt
+Created : May 2025
+Project : Multi-Document RAG with Conversational AI
+Stack   : Python + LangChain + ChromaDB + Groq + Streamlit
+Cost    : Rs 0 (all free tools)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -10,7 +10,7 @@ import os
 
 load_dotenv()
 
-# Step1: setup embeddin/home/bharath/projects/vizag-training/day-4/chromadb-intro/bank.pdfgs 
+# Step1: setup embedding
 embeddings = HuggingFaceEmbeddings(
     model_name = 'sentence-transformers/all-MiniLM-L6-v2'
 )
@@ -61,8 +61,11 @@ else:
 
 query = "What documents does a self-employed doctor need to apply for a home loan?"
 results = vectorstore.similarity_search_with_score(query, k = 3)
-
+print('Results: ===== ', results)
 print(f"\nTop 3 results for: {query}")
+# results = [
+    
+# ]
 for i, (doc, score) in enumerate(results):
     print(f'Result {i+1} (similarity: {score:.3f}):')
     print(f'Page: {doc.metadata.get("page", "?")} | {doc.page_content[:120]}....')
@@ -94,6 +97,7 @@ def answer_question(question):
         f'[Page {d.metadata.get("page", "?")}: {d.page_content}]'
         for d in docs
     ])
+    # print("context: =======", context)
     chain = rag_prompt | llm | StrOutputParser()
     return chain.invoke({'question': question, 'context': context})
 
