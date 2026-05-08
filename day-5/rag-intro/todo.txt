@@ -1,0 +1,33 @@
+Requirements:
+
+Given a pdf document , the user wanted to get accurate answers from the pdf document using RAG pipeline 
+
+- llm model - llama from GROQ
+- embedding model - huggingface
+- vector database - ChromaDB
+
+
+Steps:
+
+Create a project
+create a new virtual environment for your projectactivate the virtual environment 
+Install all the dependencies
+Get the api key
+create .env file 
+store the secrets of your project in the .env
+Import all the dependencies at the top of your file 
+load the .env file 
+create the connection to embedding model and also llm model
+create the connection to the vector DB - ChromaDB
+Load existing ChromaDB from disk if already pdf is present 
+Load the pdf document 
+Divide the pdf into chunks - based on paragraph or sentence 
+Embed the chunks and store it in the vectorDB
+Take the input query from the user
+convert the query into a vector 
+Find similar vectors in the chromaDB 
+Test the similarity 
+create the rag prompt 
+call the llm with the prompt 
+get the response and print on the screen 
+

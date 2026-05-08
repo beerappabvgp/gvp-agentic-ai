@@ -16,12 +16,12 @@ llm = ChatGroq(
 
 memory = ConversationBufferMemory(
     return_messages=True,
-    memory_key='chat_history'
+    memory_key='chat_history',
 )
 
 prompt = ChatPromptTemplate.from_messages([
   ('system', "You are a friendly assistant. Talk like a helpful human"),
-  MessagesPlaceholder(variable_name="chat_history")
+  MessagesPlaceholder(variable_name="chat_history"),
   ("human", "{input}")  
 ])
 
@@ -35,12 +35,11 @@ def chat(user_input):
     response = chain.invoke({"input": user_input, "chat_history": history})
     
     memory.save_context(
-        {
-            'input': user_input,
-            'output': response
-        }
+        {"input": user_input},
+        {"output": response},    
     )
     
+    return response
     
 # test 
 

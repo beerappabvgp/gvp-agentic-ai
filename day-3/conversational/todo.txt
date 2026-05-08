@@ -11,4 +11,25 @@ Create the prompt
 Call the llm
 get the reposne and print it 
 Create the memory to store the previous conversation (inputs and outputs)
-Give the previous conversation information in the every next prompt
+Give the previous conversation information in the every next 
+
+
+
+
+
+
+conversation memory = 0MB
+input => what is DL? => llm => 500 token of output  => 503 tokens
+input => what is ML? => llm => 500 tokens  => 506 + 500 = 1006
+1512
+
+
+strated the conversation
+input => what is DL? => llm => 500 token of output
+input => what is ML? => llm => 500 tokens  => 506 + 500 = 1006
+input => what is CS? => llm => 500 token
+input => what is a computer? => 500 tokens
+
+converstaion_memroy_tokens + user_tokens = 1509 + 3 = 1512
+
+1509 + 1512 + 4
