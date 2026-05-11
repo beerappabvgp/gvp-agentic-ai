@@ -1,0 +1,28 @@
+Requirements:
+
+Given a pdf document and user question and the conversation the output of the user question should be accurate 
+
+steps
+
+create a new project 
+create a new virtual environment 
+activate the virtual environment
+create a new file called requirements.txt
+list down all the dependencies in the requiremnts.txt file 
+install all the dependencies in the requirements.txt file 
+ge t the api_keys 
+create a new .env file and store the secrets in the .env file 
+import all the dependencies at the top of your file
+load the .env file 
+create the connection to the llm , embedding model and also chromaDB
+you wanted a pdf document
+if the pdf document is already indexed and stored in the vectorDB we can skip the re-indexing
+else if the pdf document is not present in the vectorDB 
+split the pdf document into small data pieces
+convert the chunk of data into vectors using embedding model and then 
+you take those vectors and store it in the vectorDB
+create some memory to store the conversation history 
+you wnated to summarize entire converstaion history using llm
+take the questuion and search fo the similar vectors in the vector database 
+get the similar vectors as putput from the vector DB and give that as context to the llm 
+and llm will generate the response based on that and print the response 
