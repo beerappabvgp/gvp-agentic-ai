@@ -1,0 +1,46 @@
+Goal:
+
+Create a simple calculator program
+
+Given the below information can my agent achieve the Goal
+
+Tools:
+    1. create_file
+    2. write data to the file 
+    3. read data from the file 
+
+And an llm - Groq
+
+Steps: 
+1. Give the list of tools with detailed description of them and also the goal the user asked to the llm
+2. llm responds back - call the tool create_file
+3. agents program will execute the create_file tool ==> a new file has been created
+4.call the llm again - prompt contains - previous tool result and also conversation_history
+5. llm responds back - telling call the write_to_file tool with the following program , and write the program to the file 
+6. Agent cals the tool and writes the program to the file
+7. Call the llm again - with previous tool results and also conversation_history
+8. llm responds back with - the task has been successfuly completed.
+
+
+
+
+you have a file - cs.txt
+content of the file 
+
+Hello world 
+CS Is FUN
+
+execute_file_update(cs.txt, 'hello', 'hi')
+1. open the file 
+2. read the content of the file 
+3. compare whether old text is present in the cs.txt file 
+4.if the content is not present return that cannot update anything as we could not find any matching content to update 
+5. Replace the old_text with the new_text and then 
+6. write the updated_content to the file 
+
+=> 
+res:
+
+cs.txt
+Hi world
+CS Is FUN
